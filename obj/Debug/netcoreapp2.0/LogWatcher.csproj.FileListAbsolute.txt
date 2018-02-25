@@ -1,0 +1,10 @@
+C:\Users\Юра\Desktop\Projects\LogWatcher\bin\Debug\netcoreapp2.0\LogWatcher.deps.json
+C:\Users\Юра\Desktop\Projects\LogWatcher\bin\Debug\netcoreapp2.0\LogWatcher.runtimeconfig.json
+C:\Users\Юра\Desktop\Projects\LogWatcher\bin\Debug\netcoreapp2.0\LogWatcher.runtimeconfig.dev.json
+C:\Users\Юра\Desktop\Projects\LogWatcher\bin\Debug\netcoreapp2.0\LogWatcher.dll
+C:\Users\Юра\Desktop\Projects\LogWatcher\bin\Debug\netcoreapp2.0\LogWatcher.pdb
+C:\Users\Юра\Desktop\Projects\LogWatcher\obj\Debug\netcoreapp2.0\LogWatcher.csproj.CoreCompileInputs.cache
+C:\Users\Юра\Desktop\Projects\LogWatcher\obj\Debug\netcoreapp2.0\LogWatcher.AssemblyInfoInputs.cache
+C:\Users\Юра\Desktop\Projects\LogWatcher\obj\Debug\netcoreapp2.0\LogWatcher.AssemblyInfo.cs
+C:\Users\Юра\Desktop\Projects\LogWatcher\obj\Debug\netcoreapp2.0\LogWatcher.dll
+C:\Users\Юра\Desktop\Projects\LogWatcher\obj\Debug\netcoreapp2.0\LogWatcher.pdb
