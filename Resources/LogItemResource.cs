@@ -1,15 +1,11 @@
 using System;
-using System.ComponentModel.DataAnnotations;
 
-namespace LogWatcher.Models
+namespace LogWatcher.Resources
 {
-    public class LogItem
+    public class LogItemResource
     {
         public Guid Id { get; set; }
-
-        [StringLength(255)]
         public string Header { get; set; }
         public string Description { get; set; }
-
     }
 }
