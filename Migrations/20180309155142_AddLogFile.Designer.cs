@@ -11,9 +11,10 @@ using System;
 namespace LogWatcher.Migrations
 {
     [DbContext(typeof(LogDbContext))]
-    partial class LogDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180309155142_AddLogFile")]
+    partial class AddLogFile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,8 +27,6 @@ namespace LogWatcher.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("FileName");
-
-                    b.Property<long>("LastPosition");
 
                     b.HasKey("Id");
 
@@ -50,7 +49,7 @@ namespace LogWatcher.Migrations
 
                     b.HasIndex("LogFileId");
 
-                    b.ToTable("LogItems");
+                    b.ToTable("LogItem");
                 });
 
             modelBuilder.Entity("LogWatcher.Models.LogItem", b =>

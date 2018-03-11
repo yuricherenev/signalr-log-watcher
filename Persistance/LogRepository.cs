@@ -13,18 +13,26 @@ namespace LogWatcher.Persistance
         {
             this.context = context;
         }
-        public async Task<LogItem> GetLogItem(Guid id)
+
+        public void AddFile(LogFile file)
         {
-            return await context.LogItems.SingleOrDefaultAsync(log => log.Id == id);
+            context.LogFiles.Add(file);
         }
 
-        public void AddLogItem(LogItem logItem)
+        public async Task<LogFile> GetByNameAsync(string name, bool includeRelated = false)
         {
-            context.LogItems.Add(logItem);
+            if (!includeRelated)
+                return await context.LogFiles.SingleOrDefaultAsync(f => f.FileName == name);
+
+            return await context.LogFiles
+                .Include(v => v.Logs)
+                .SingleOrDefaultAsync(v => v.FileName == name);
         }
-        public void AddLogItems(List<LogItem> logItems)
+
+        public async Task<long> GetLastPositionAsync(string name)
         {
-            context.LogItems.AddRange(logItems);
+            var logFile = await context.LogFiles.SingleOrDefaultAsync(f => f.FileName == name);
+            return logFile == null ? 0 : logFile.LastPosition;
         }
     }
 }

@@ -6,7 +6,6 @@ namespace LogWatcher.Core
 {
     public interface ILogService
     {
-        //Task<IEnumerable<LogItem>> Read();
-        IEnumerable<LogItem> Read();
+        ICollection<LogItem> Read();
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 
@@ -7,7 +8,8 @@ namespace LogWatcher.Hubs
     {
         public Task Send(string message)
         {
-            return Clients.All.InvokeAsync("Send", message);
+            Console.WriteLine("send {0}", message);
+            return Clients.All.InvokeAsync("send", message);
         }
     }
 }

@@ -1,8 +1,10 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LogWatcher.Models
 {
+    [Table("LogItems")]
     public class LogItem
     {
         public Guid Id { get; set; }

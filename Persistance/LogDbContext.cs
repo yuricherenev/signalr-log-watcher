@@ -7,7 +7,7 @@ namespace LogWatcher.Persistance
     {
         public LogDbContext(DbContextOptions<LogDbContext> dbContext) : base(dbContext) { }
 
-        public DbSet<LogItem> LogItems { get; set; }
+        public DbSet<LogFile> LogFiles { get; set; }
         
     }
 }

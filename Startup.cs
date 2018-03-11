@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json.Serialization;
 
 namespace LogWatcher
 {
@@ -33,17 +35,17 @@ namespace LogWatcher
             services.AddCors(options =>
                 options.AddPolicy("AllowAny",
                     x => { x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin(); }));
-            services.AddMvc();
+            services.AddMvc()
+                .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());;
             services.AddScoped<ILogService, LogService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ILogRepository, LogRepository>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();            
-            services.AddSingleton<IWatcherService, WatcherService>();
+            services.AddSingleton<IHostedService, WatcherService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseWatcher();
             app.UseCors("AllowAny");
             app.UseSignalR(routes =>
             {

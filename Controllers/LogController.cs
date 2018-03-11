@@ -24,10 +24,8 @@ namespace LogWatcher.Controllers
             ILogService logService,
             IMapper mapper,
             ILogRepository repository,
-            //IWatcherService watcherService,
             IHubContext<Broadcaster> messageHubContext)
         {
-            //this.watcherService = watcherService;
             this.logService = logService;
             this.messageHubContext = messageHubContext;
             this.mapper = mapper;
@@ -35,19 +33,11 @@ namespace LogWatcher.Controllers
         }
 
         [HttpGet("/api/logs/all")]
-        public IActionResult GetAll()
+        public ICollection<LogItem> GetAll()
         {
             var list = logService.Read();
-            return Ok(list);
+            return list;
         }
 
-        [HttpGet("/api/logs/untracked")]
-        public IActionResult GetUntracked(Guid lastLogId)
-        {
-            //watcherService.Watch();
-            var list = logService.Read();
-            messageHubContext.Clients.All.InvokeAsync("Send", "hello from getAll");
-            return Ok();
-        }
     }
 }

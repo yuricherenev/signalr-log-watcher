@@ -23,28 +23,11 @@ namespace LogWatcher.Core
             this.hostingEnvironment = hostingEnvironment;
         }
 
-        public IEnumerable<LogItem> Read()
+        public ICollection<LogItem> Read()
         {
-            string fileName = $@"{hostingEnvironment.WebRootPath}\commonShort.log";
-
-            var list = new List<LogItem>();
-            using(StreamReader sr = File.OpenText(fileName))
-            { 
-                string s = String.Empty;
-                while ((s = sr.ReadLine()) != null)
-                {
-                    var splittedLine = s.Split(']');
-                    list.Add(new LogItem()
-                    {
-                        Header = splittedLine[0],
-                            Description = splittedLine[1]
-                    });
-                }
-            }
-
-            repository.AddLogItems(list);
-            //await unitOfWork.Complete();
-            return list;
+            string filePath = $@"{hostingEnvironment.WebRootPath}\commonShort.log";
+            var logFile = LogReader.GetFileFromPath(filePath);
+            return logFile.Logs;
         }
     }
 }

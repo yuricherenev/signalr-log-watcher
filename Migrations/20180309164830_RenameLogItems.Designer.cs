@@ -11,9 +11,10 @@ using System;
 namespace LogWatcher.Migrations
 {
     [DbContext(typeof(LogDbContext))]
-    partial class LogDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180309164830_RenameLogItems")]
+    partial class RenameLogItems
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,7 +28,7 @@ namespace LogWatcher.Migrations
 
                     b.Property<string>("FileName");
 
-                    b.Property<long>("LastPosition");
+                    b.Property<int>("LastPosition");
 
                     b.HasKey("Id");
 

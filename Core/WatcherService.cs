@@ -1,19 +1,24 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using LogWatcher.Hubs;
 using LogWatcher.Models;
+using LogWatcher.Persistance;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Hosting;
 
 namespace LogWatcher.Core
 {
-    public class WatcherService : IWatcherService
+    public class WatcherService : BackgroundService, IWatcherService
     {
         private readonly IHostingEnvironment hostingEnvironment;
         private readonly IHubContext<Broadcaster> messageHubContext;
-        private DateTime lastTimeFileEventRaised;
+        private FileSystemWatcher watcher;
+        private LogFile file;
 
         public WatcherService(
             IHostingEnvironment hostingEnvironment,
@@ -22,9 +27,22 @@ namespace LogWatcher.Core
             this.hostingEnvironment = hostingEnvironment;
             this.messageHubContext = messageHubContext;
         }
+
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            Console.WriteLine($"GracePeriodManagerService is starting.");
+            stoppingToken.Register(() => Console.WriteLine($" GracePeriod background task is stopping."));
+
+            Watch();
+            await Task.Delay(5000, stoppingToken);
+
+            Console.WriteLine($"GracePeriod background task is stopping.");
+        }
+
         public void Watch()
         {
-            FileSystemWatcher watcher = new FileSystemWatcher();
+            Console.WriteLine("FileSystemWatcher run");
+            watcher = new FileSystemWatcher();
             watcher.Path = hostingEnvironment.WebRootPath;
             watcher.NotifyFilter = NotifyFilters.LastWrite;
             watcher.Filter = "*.log";
@@ -35,37 +53,28 @@ namespace LogWatcher.Core
 
         private void OnChanged(object sender, FileSystemEventArgs e)
         {
-            if (DateTime.Now.Subtract(lastTimeFileEventRaised).TotalMilliseconds < 500)
-                return;
-
-            Console.WriteLine("File: " + e.FullPath + " " + e.ChangeType);
-
-            lastTimeFileEventRaised = DateTime.Now;
-
-            var list = Read();
-            messageHubContext.Clients.All.InvokeAsync("Send", list);
-        }
-
-        public async Task<IEnumerable<LogItem>> Read()
-        {
-            string fileName = $@"{hostingEnvironment.WebRootPath}\commonShort.log";
-
-            var list = new List<LogItem>();
-
-            //FileStream afile = new FileStream(fileName, FileMode.Open, fil);
-            var lines = await File.ReadAllLinesAsync(fileName);
-            
-            foreach (var line in lines)
+            try
             {
-                var splittedLine = line.Split(']');
-                list.Add(new LogItem()
+                watcher.EnableRaisingEvents = false;
+
+                if (file != null && file.FileName.Contains(e.FullPath))
                 {
-                    Header = splittedLine[0],
-                        Description = splittedLine[1]
-                });
+                    Console.WriteLine("file is not null {0}", file.LastPosition);
+                    file = LogReader.GetFileFromPath(e.FullPath, file.LastPosition);
+                }
+                else
+                {
+                    Console.WriteLine("file is null");
+                    file = LogReader.GetFileFromPath(e.FullPath);
+                }
+
+                var logs = file.Logs;
+                messageHubContext.Clients.All.InvokeAsync("send", logs);
             }
-            Console.WriteLine("File read");
-            return list;
+            finally
+            {
+                watcher.EnableRaisingEvents = true;
+            }
         }
     }
 }
